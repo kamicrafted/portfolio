@@ -1,85 +1,107 @@
-<script setup>
+<script>
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import TransitionExpand from './components/TransitionExpand.vue';
+
+// reactive state
+import { ref, onMounted } from 'vue'
+
+import Nav from './components/Nav.vue'
+import Footer from './components/Footer.vue'
+import PrinterMarks from './components/PrinterMarks.vue'
+import SocialLinks from './components/SocialLinks.vue'
+
+export default {
+  name: 'App',
+  components: {
+    TransitionExpand,
+    RouterLink,
+    RouterView,
+    ref,
+    onMounted,
+    Nav,
+    Footer,
+    PrinterMarks,
+    SocialLinks
+  },
+  data() {
+    return {
+      expanded: false,
+    };
+  },
+}
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <Nav :expanded="expanded" />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+  <RouterView v-slot="{ Component }">
+    <transition name="route" mode="out-in" appear>
+      <component :is="Component" />
+    </transition>
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
+    <!-- <transition-expand name="route" mode="out-in" appear>
+      <component :is="Component" v-if="expanded" />
+    </transition-expand> -->
+  </RouterView>
+  <Footer />
 
-  <RouterView />
+  <!-- <PrinterMarks /> -->
+  <!-- <SocialLinks /> -->
+
+  <div class="lighting"></div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
+<style lang="scss">
+@import 'styles/vars';
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+  * {
+    will-change: height;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
   }
 
-  .logo {
-    margin: 0 2rem 0 0;
+  html, body, #app {
+    height: 100%;
+    min-height: 100%;
   }
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+  body {
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none; /* for Firefox */
+    overflow-y: scroll; 
+
+    &::-webkit-scrollbar {
+      display: none; /* for Chrome, Safari, and Opera */
+    }
+  }
+  
+  main {
+    max-width: $site-max-width;
+    width: 100%;
+    margin: 0 auto;
   }
 
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+  .lighting {
+    position: absolute;
+    z-index: -10;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgb(247,62,107);
+    background: radial-gradient(at top right, rgba(247,62,107,1) 0%, rgba(247,62,107,0) 70%);
   }
-}
+
+  #app > .site-footer {
+    display: none !important;
+  }
+
+  .template-home {
+    body, #app {
+      height: auto;
+      min-height: 100%;
+    }
+  }
 </style>
